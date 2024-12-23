@@ -21,11 +21,8 @@ This task automates Trello board management using Java and Selenium WebDriver.
    - Ensure `pom.xml` includes all required dependencies for Selenium and JUnit/TestNG.
 
 3. **Configure Credentials:**
-   - Update the `config.properties` file:
-     ```properties
-     email=<your_trello_email>
-     password=<your_trello_password>
-     ```
+   - The code is designed to handle the credentials with environment variables.
+   - Set environment variables for TRELLO_PASSWORD and TRELLO_EMAIL to run the tests
 
 ## Automated Steps
 
