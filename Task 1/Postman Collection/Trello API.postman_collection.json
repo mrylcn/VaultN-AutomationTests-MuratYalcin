@@ -1,0 +1,387 @@
+{
+	"info": {
+		"_postman_id": "8c714872-2d3e-4841-b759-4f4a67d8e4c5",
+		"name": "Trello API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40553517"
+	},
+	"item": [
+		{
+			"name": "Create a Board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"boardId\", pm.response.json().id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/boards/?name=Vaultn&key={{apiKey}}&token={{token}}&defaultLists=false",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"boards",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Vaultn"
+						},
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "defaultLists",
+							"value": "false"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/boards/?name={name}&key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create a New List",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const lists = [\"Done\", \"Testing\", \"Doing\", \"Todo\", \"Backlog\"];\r",
+							"const currentList = pm.environment.get(\"currentList\") || 0;\r",
+							"\r",
+							"// Stop if all lists are created\r",
+							"if (currentList >= lists.length) {\r",
+							"  postman.setNextRequest(null);\r",
+							"  return;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"listName\", lists[currentList]);\r",
+							"pm.environment.set(\"currentList\", parseInt(currentList) + 1);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const listName = pm.environment.get(\"listName\").toLowerCase() + \"ListId\";\r",
+							"pm.environment.set(listName, pm.response.json().id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/lists?name={{listName}}&idBoard={{boardId}}&key={{apiKey}}&token={{token}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{listName}}"
+						},
+						{
+							"key": "idBoard",
+							"value": "{{boardId}}"
+						},
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/lists?name={name}&idBoard=5abbe4b7ddc1b351ef961414&key=APIKey&token=APIToken'"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Cards",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const cards = [\r",
+							"  { name: \"Sign up for Trello\", list: \"todoListId\" },\r",
+							"  { name: \"Get key and token\", list: \"todoListId\" },\r",
+							"  { name: \"Build a collection\", list: \"todoListId\" },\r",
+							"  { name: \"Working on Task\", list: \"todoListId\" },\r",
+							"  { name: \"UI Automation\", list: \"backlogListId\" },\r",
+							"  { name: \"Writing Test Scenarios\", list: \"backlogListId\" }\r",
+							"];\r",
+							"const currentCard = pm.environment.get(\"currentCard\") || 0;\r",
+							"\r",
+							"// Stop if all cards are created\r",
+							"if (currentCard >= cards.length) {\r",
+							"  postman.setNextRequest(null);\r",
+							"  return;\r",
+							"}\r",
+							"\r",
+							"const card = cards[currentCard];\r",
+							"pm.environment.set(\"cardName\", card.name);\r",
+							"pm.environment.set(\"listId\", pm.environment.get(card.list));\r",
+							"pm.environment.set(\"currentCard\", parseInt(currentCard) + 1);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const cardName = pm.environment.get(\"cardName\").replace(/\\s+/g, \"\") + \"CardId\";\r",
+							"pm.environment.set(cardName, pm.response.json().id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://api.trello.com/1/cards?idList={{listId}}&key={{apiKey}}&token={{token}}&name={{cardName}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"cards"
+					],
+					"query": [
+						{
+							"key": "idList",
+							"value": "{{listId}}"
+						},
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "name",
+							"value": "{{cardName}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request POST \\\r\n  --url 'https://api.trello.com/1/cards?idList=5abbe4b7ddc1b351ef961414&key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Update a Card",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const moves = [\r",
+							"  { card: \"SignupforTrelloCardId\", target: \"doneListId\" },\r",
+							"  { card: \"GetkeyandtokenCardId\", target: \"testingListId\" },\r",
+							"  { card: \"BuildacollectionCardId\", target: \"doingListId\" },\r",
+							"  { card: \"WorkingonTaskCardId\", target: \"doingListId\" }\r",
+							"];\r",
+							"const currentMove = pm.environment.get(\"currentMove\") || 0;\r",
+							"\r",
+							"// Stop if all moves are done\r",
+							"if (currentMove >= moves.length) {\r",
+							"  postman.setNextRequest(null);\r",
+							"  return;\r",
+							"}\r",
+							"\r",
+							"const move = moves[currentMove];\r",
+							"pm.environment.set(\"cardId\", pm.environment.get(move.card));\r",
+							"pm.environment.set(\"targetListId\", pm.environment.get(move.target));\r",
+							"pm.environment.set(\"currentMove\", parseInt(currentMove) + 1);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "https://api.trello.com/1/cards/{{cardId}}?key={{apiKey}}&token={{token}}&idList={{targetListId}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"cards",
+						"{{cardId}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						},
+						{
+							"key": "idList",
+							"value": "{{targetListId}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request PUT \\\r\n  --url 'https://api.trello.com/1/cards/{id}?key=APIKey&token=APIToken' \\\r\n  --header 'Accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// List all environment variables to clear\r",
+							"const variablesToReset = [\r",
+							"    \"boardId\",\r",
+							"    \"backlogListId\",\r",
+							"    \"todoListId\",\r",
+							"    \"doingListId\",\r",
+							"    \"testingListId\",\r",
+							"    \"doneListId\",\r",
+							"    \"SignupforTrelloCardId\",\r",
+							"    \"GetkeyandtokenCardId\",\r",
+							"    \"BuildacollectionCardId\",\r",
+							"    \"WorkingonTaskCardId\",\r",
+							"    \"UIAutomationCardId\",\r",
+							"    \"WritingTestScenariosCardId\",\r",
+							"    \"currentList\",\r",
+							"    \"cardName\",\r",
+							"    \"listId\",\r",
+							"    \"currentCard\",\r",
+							"    \"currentMove\",\r",
+							"    \"targetListId\",\r",
+							"    \"cardId\",\r",
+							"    \"listName\"\r",
+							"];\r",
+							"\r",
+							"\r",
+							"// Set each variable to null\r",
+							"variablesToReset.forEach(variable => pm.environment.set(variable, \"\"));\r",
+							"\r",
+							"// Log confirmation for debugging\r",
+							"console.log(\"Environment variables reset to null:\", variablesToReset);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.trello.com/1/boards/{{boardId}}?key={{apiKey}}&token={{token}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"trello",
+						"com"
+					],
+					"path": [
+						"1",
+						"boards",
+						"{{boardId}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						},
+						{
+							"key": "token",
+							"value": "{{token}}"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl --request DELETE \\\r\n  --url 'https://api.trello.com/1/boards/{id}?key=APIKey&token=APIToken'"
+			},
+			"response": []
+		}
+	]
+}
