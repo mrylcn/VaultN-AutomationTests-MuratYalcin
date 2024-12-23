@@ -6,6 +6,7 @@ This task automates Trello board management using Cypress, a modern JavaScript-b
 ## Prerequisites
 - [Node.js](https://nodejs.org/) (with npm)
 - [Cypress](https://www.cypress.io/)
+- Delete any VaultN board if there is any
 
 ## Setup
 

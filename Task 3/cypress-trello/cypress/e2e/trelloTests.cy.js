@@ -5,6 +5,9 @@ describe('Trello UI Automation', () => {
           if (err.message.includes('Syntax error, unrecognized expression')) {
             return false;
           }
+          else if (err.message.includes('ResizeObserver loop completed with undelivered notifications')) {
+            return false;
+          } 
           throw err;
         });
     });

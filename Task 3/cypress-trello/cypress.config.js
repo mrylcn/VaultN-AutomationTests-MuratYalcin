@@ -5,8 +5,8 @@ module.exports = {
     viewportWidth: 1920,
     viewportHeight: 1080,
     env: {
-      email: ,
-      password: ,
+      email: "<YOUR EMAIL" ,
+      password: "<YOUR PASSWORD",
       boardName: 'VaultN',
       lists: ["Backlog", "Todo", "Doing", "Testing", "Done"],
       cards: {
